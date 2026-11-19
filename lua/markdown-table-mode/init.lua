@@ -23,6 +23,7 @@ local opt = {
     insert_leave = true,        -- when leaving insert
     pad_separator_line = false, -- add space in separator line
     align_style = 'default',    -- default, left, center, right
+    enable = false,             -- enable markdown table mode when the plugin is set up
   },
 }
 
@@ -277,6 +278,10 @@ local function setup(opts)
       end
     end,
   })
+  if opt.options.enable and not mtm_startup then
+    mtm_startup = true
+    acid = init()
+  end
 end
 
 return {
