@@ -133,12 +133,19 @@ local function format_separator_line(cells, width)
     local left_char = cells[i]:sub(1, 1)
     local right_char = cells[i]:sub(#cells[i])
     local num = width[i] or 0
-    if bias then
+    if bias and num == 1 and left_char ~= ':' and right_char ~= ':' then
+      -- 1-wide column without alignment markers: " - " keeps padding at the right width
+      line = line .. ' - |'
+      goto continue
+    end
+    -- padding needs at least 2 columns (num >= 0), otherwise the cell would be too wide
+    if bias and num >= 2 then
       num = num - 2
       left_char = ' ' .. left_char
       right_char = right_char .. ' '
     end
     line = line .. left_char .. string.rep('-', num) .. right_char .. '|'
+    ::continue::
   end
   return line
 end
