@@ -39,10 +39,11 @@ end
 
 local function check_line_is_table(line_number)
   local line = ffi.string(ffi.C.ml_get(line_number))
-  return string.match(line, '^|.*|$')
+  return string.match(line, '^%s*|.*|%s*$')
 end
 
 local function line_to_cells(line)
+  line = line:match('^%s*(.-)%s*$') -- ignore indentation and trailing whitespace
   local table_cells = {}
   local cell_buffer = ''
   for cell in line:gmatch('([^|]+)%|') do
@@ -120,6 +121,8 @@ local function get_table_infos()
     table_infos.table_end_line_number,
     true
   )
+  -- indentation of the header row, applied to every row
+  table_infos.indent = table_infos.current_table[1]:match('^%s*')
   table_infos.cells = table_to_cells(table_infos.current_table)
   table_infos.max_cells_width = get_max_cells_width(table_infos.cells)
   return table_infos
@@ -141,8 +144,9 @@ local function format_separator_line(cells, width)
   return line
 end
 
-local function cells_to_table(cells, max_cells_width)
+local function cells_to_table(cells, max_cells_width, indent)
   local lines = {}
+  indent = indent or ''
   for i = 1, #cells do
     local line = '|'
     if i == 2 then
@@ -152,7 +156,7 @@ local function cells_to_table(cells, max_cells_width)
         line = line .. format_cell(cells[i][j], max_cells_width[j]) .. '|'
       end
     end
-    table.insert(lines, line)
+    table.insert(lines, indent .. line)
   end
   return lines
 end
@@ -183,7 +187,7 @@ local function format_markdown_table()
     return
   end
   local table_infos = get_table_infos()
-  local lines = cells_to_table(table_infos.cells, table_infos.max_cells_width)
+  local lines = cells_to_table(table_infos.cells, table_infos.max_cells_width, table_infos.indent)
   api.nvim_buf_set_lines(
     0,
     table_infos.table_start_line_number - 1,
