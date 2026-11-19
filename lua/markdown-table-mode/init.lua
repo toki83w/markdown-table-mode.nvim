@@ -224,6 +224,9 @@ end
 local function init()
   local acid = nil
 
+  -- avoid stacking duplicates when init() runs more than once (setup, BufEnter, :Mtm)
+  api.nvim_clear_autocmds({ group = group })
+
   if opt.options.insert_leave then
     acid = api.nvim_create_autocmd('InsertLeave', {
       group = group,
