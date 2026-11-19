@@ -18,13 +18,11 @@ local opt = {
   filetype = {
     '*.md',
   },
-  options = {
-    insert = true,              -- when typing "|"
-    insert_leave = true,        -- when leaving insert
-    pad_separator_line = false, -- add space in separator line
-    align_style = 'default',    -- default, left, center, right
-    enable = false,             -- enable markdown table mode when the plugin is set up
-  },
+  insert = true,              -- when typing "|"
+  insert_leave = true,        -- when leaving insert
+  pad_separator_line = false, -- add space in separator line
+  align_style = 'default',    -- default, left, center, right
+  enable = false,             -- enable markdown table mode when the plugin is set up
 }
 
 local function table_insert(tab, cell, num)
@@ -130,7 +128,7 @@ local function get_table_infos()
 end
 
 local function format_separator_line(cells, width)
-  local line, bias = '|', opt.options.pad_separator_line
+  local line, bias = '|', opt.pad_separator_line
   for i = 1, #cells do
     local left_char = cells[i]:sub(1, 1)
     local right_char = cells[i]:sub(#cells[i])
@@ -168,7 +166,7 @@ local function add_new_col(table_infos)
   end
 
   if #table_infos.cells == 1 or #table_infos.cells[2] < #table_infos.cells[1] then
-    table_infos.current_table[2] = table_infos.current_table[2] .. alignment[opt.options.align_style]
+    table_infos.current_table[2] = table_infos.current_table[2] .. alignment[opt.align_style]
     for i = 3, #table_infos.current_table do
       table_infos.current_table[i] = table_infos.current_table[i] .. '  |'
     end
@@ -227,7 +225,7 @@ local function init()
   -- avoid stacking duplicates when init() runs more than once (setup, BufEnter, :Mtm)
   api.nvim_clear_autocmds({ group = group })
 
-  if opt.options.insert_leave then
+  if opt.insert_leave then
     acid = api.nvim_create_autocmd('InsertLeave', {
       group = group,
       pattern = opt.filetype,
@@ -236,7 +234,7 @@ local function init()
       end,
     })
   end
-  if opt.options.insert then
+  if opt.insert then
     vim.keymap.set('i', '|', function()
       format_markdown_table_lines()
     end, {})
@@ -245,10 +243,10 @@ local function init()
 end
 
 local function final(acid)
-  if opt.options.insert_leave and acid then
+  if opt.insert_leave and acid then
     pcall(api.nvim_del_autocmd, acid)
   end
-  if opt.options.insert then
+  if opt.insert then
     pcall(vim.keymap.del, 'i', '|', {})
   end
 end
@@ -281,7 +279,7 @@ local function setup(opts)
       end
     end,
   })
-  if opt.options.enable and not mtm_startup then
+  if opt.enable and not mtm_startup then
     mtm_startup = true
     acid = init()
   end

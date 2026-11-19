@@ -33,12 +33,10 @@ require('markdown-table-mode').setup({
   filetype = {
     '*.md',
   },
-  options = {
-    insert = true, -- when typing "|"
-    insert_leave = true, -- when leaving insert
-    pad_separator_line = false, -- add space in separator line
-    align_style = 'default', -- default, left, center, right
-    enable = false, -- enable markdown table mode when the plugin is set up
-  },
+  insert = true, -- when typing "|"
+  insert_leave = true, -- when leaving insert
+  pad_separator_line = false, -- add space in separator line
+  align_style = 'default', -- default, left, center, right
+  enable = false, -- enable markdown table mode when the plugin is set up
 })
 ```
