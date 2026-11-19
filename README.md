@@ -37,7 +37,7 @@ require('markdown-table-mode').setup({
     insert = true, -- when typing "|"
     insert_leave = true, -- when leaving insert
     pad_separator_line = false, -- add space in separator line
-    alig_style = 'default', -- default, left, center, right
+    align_style = 'default', -- default, left, center, right
   },
 })
 ```
